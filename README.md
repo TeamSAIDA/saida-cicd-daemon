@@ -124,5 +124,5 @@ REST API 목록은 Postman에 작성하여 [여기](https://www.getpostman.com/c
 DB설정 정보를 config.py에서 수정
 ### 실행
 ```
-pyton main.py
+python main.py
 ```
