@@ -62,7 +62,10 @@ class MySQL(object) :
             for row in self._db_curr:
                 print(row)
 
-        return self._db_curr.fetchall();
+        columns = self._db_curr.description
+        result = [{columns[index][0]:column for index, column in enumerate(value)} for value in self._db_curr.fetchall()]
+
+        return result;
 
 def insert_query_with_dict(table_name, param_dict) :
     mysql = MySQL()
@@ -117,8 +120,9 @@ def select_bot_with_yyyymmdd(yyyymmdd) :
 
 def select_game_with_yyyymmdd(yyyymmdd) :
     db = MySQL();
-    sql = 'select a.*,  b.*, c.* from game a, bot b, bot c where a.id_bot_1 = b.id and a.id_bot_2 = c.id and date(a.create_dt) = %s';
+    sql = 'select a.*,  b.*, c.* from game a, bot b, bot c where a.bot_id_1 = b.bot_id and a.bot_id_2 = c.bot_id and date(a.create_dt) = %s';
     rows = db.execute_select_query(sql, yyyymmdd);  # run a sql
+    
     return rows
 
 if __name__ == '__main__':
