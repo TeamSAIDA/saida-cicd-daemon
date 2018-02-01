@@ -1,7 +1,7 @@
 """
 Reference : https://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask
 """
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_restful import reqparse, abort, Resource, Api
 from api.MyDB import MySQL
 import api.MyDB as mydb
@@ -71,9 +71,9 @@ class Board(Resource) :
 
 class Tournament(Resource) :
 
-    def put(self, game) :
-
-        mydb.insert_query_with_dict('game', []);
+    def put(self) :
+        jsonBody = request.json
+        mydb.insert_query_with_dict('game', jsonBody['games']);
 
         # if len(data) is 0:
         #     conn.commit()
@@ -108,4 +108,4 @@ api.add_resource(Bot, '/bot')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
