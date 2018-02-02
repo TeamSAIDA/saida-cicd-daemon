@@ -32,6 +32,7 @@ CREATE TABLE `game` (
   `race_cd_1` CHAR(2) NOT NULL DEFAULT '04',
   `race_cd_2` CHAR(2) NOT NULL DEFAULT '04',
   `rslt_cd` CHAR(2) NOT NULL,
+  `map_cd` CHAR(2) NOT NULL,
   `create_dt` DATETIME NULL DEFAULT NULL,
   `update_dt` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`turn`, `game_id`)

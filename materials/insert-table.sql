@@ -60,6 +60,6 @@ INSERT INTO bot (`bot_name`, `owner_cd`, `type_cd`, `race_cd`, `api_version`, `c
 
 INSERT INTO bot (`bot_name`, `type_cd`, `race_cd`, `api_version`, `create_dt`, `update_dt`) VALUES ('name','typeCd','raceCd','apiversion',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
 
-INSERT INTO `game` (`turn`,`game_id`,`bot_id_1`,`bot_id_2`,`rslt_cd`,`create_dt`, `update_dt`) VALUES (0, 0, 1, 2, '04', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `game` (`turn`,`game_id`,`bot_id_1`,`bot_id_2`,`rslt_cd`, `map_cd`,`create_dt`, `update_dt`) VALUES (0, 0, 1, 2, '04', '01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 

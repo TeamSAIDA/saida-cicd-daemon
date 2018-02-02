@@ -7,6 +7,9 @@ This is a single instance to aceess MySQL instanec in this dameon.
 API guide : http://pymysql.readthedocs.io/en/latest/
 
 """
+
+botnames = {}
+
 class MySQL(object) :
     _db_connection = None
     _db_curr = None
@@ -26,13 +29,17 @@ class MySQL(object) :
     def __del__(self):
         self._db_connection.close()
 
-    def execue_not_select_sql(self, query, params=None) :
+    def execue_not_select_sql(self, query, params=None, is_multi_row=False) :
         self._db_curr.execute('set profiling = 1')
         try:
             print("Executing query : {}".format(query))
             if params is None :
                 print("Executing param : {}".format(params))
                 self._db_curr.execute(query)
+            elif is_multi_row :
+                for param in params :
+                    print("Executing param : {}".format(param))
+                    self._db_curr.execute(query, param)
             else :
                 self._db_curr.execute(query, params)
             self._db_connection.commit()
@@ -50,12 +57,12 @@ class MySQL(object) :
         try:
             print("Executing query : {}".format(query))
             if params is None :
-                print("Executing param : {}".format(params))
                 self._db_curr.execute(query)
             else :
+                print("Executing param : {}".format(params))
                 self._db_curr.execute(query, params)
 
-            print('mysql commit success')
+            print('mysql select success')
         except Exception:
             print('mysql query gets error and failed. see the error below.')
             self._db_curr.execute('show profiles')
@@ -66,6 +73,21 @@ class MySQL(object) :
         result = [{columns[index][0]:column for index, column in enumerate(value)} for value in self._db_curr.fetchall()]
 
         return result;
+
+def insert_query_with_multi_dict(table_name, rows) :
+    if isinstance(rows, list) and rows :
+        mysql = MySQL()
+
+        param_dict = rows[0]
+
+        placeholders = ', '.join(['%s'] * len(param_dict))
+        columns = ', '.join(param_dict.keys())
+
+        qry = "Insert Into {0} ({1}) Values ({2})".format(table_name, columns, placeholders)
+
+        params = [[item for item in param_dict.values() ] for param_dict in rows]
+
+        mysql.execue_not_select_sql(qry, params, True)
 
 def insert_query_with_dict(table_name, param_dict) :
     mysql = MySQL()
@@ -110,6 +132,20 @@ def insert_query_with_sql() :
      sql =  "INSERT INTO `bot`(`id`, `bot_name`, `api_version`, `owner`, `type`, `race_type`) VALUES(5, 'joe', 1, 'joe', 1, 'T')"
      db.execue_not_select_sql(sql)
 
+def getBotIdFromBotName(bot_name) :
+    print(botnames)
+    if bot_name not in botnames :
+        db = MySQL();
+
+        sql = 'select bot_name, bot_id from bot where bot_name = %s'
+
+        row = db.execute_select_query(sql, bot_name)[0]
+
+        print(row)
+
+        botnames[row['bot_name']] = row['bot_id']
+        print(botnames)
+    return botnames[bot_name]
 
 def select_bot_with_yyyymmdd(yyyymmdd) :
     db = MySQL();

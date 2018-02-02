@@ -73,7 +73,20 @@ class Tournament(Resource) :
 
     def put(self) :
         jsonBody = request.json
-        mydb.insert_query_with_dict('game', jsonBody['games']);
+        params = jsonBody['games']
+
+        import time
+        now = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        for row in params:
+            temp = {}
+            temp['bot_id_1'] = mydb.getBotIdFromBotName(row.pop('my_bot_nm'))
+            temp['bot_id_2'] = mydb.getBotIdFromBotName(row.pop('enemy_bot_nm'))
+            temp['create_dt'] = now
+            temp['update_dt'] = now
+            row.update(temp)
+
+        mydb.insert_query_with_multi_dict('game', params);
 
         # if len(data) is 0:
         #     conn.commit()
