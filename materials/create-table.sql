@@ -60,9 +60,14 @@ CREATE TABLE `bot` (
 -- ---
 -- Foreign Keys
 -- ---
-
 ALTER TABLE `game` ADD FOREIGN KEY (bot_id_1) REFERENCES `bot` (`bot_id`);
 ALTER TABLE `game` ADD FOREIGN KEY (bot_id_2) REFERENCES `bot` (`bot_id`);
+
+
+-- ---
+-- Unique Constraint
+-- ---
+create unique index BOT_NAME_UNIQUE ON BOT (bot_name)
 
 -- ---
 -- Table Properties

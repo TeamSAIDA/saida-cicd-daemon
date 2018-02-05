@@ -90,19 +90,7 @@ def insert_query_with_multi_dict(table_name, rows) :
         mysql.execue_not_select_sql(qry, params, True)
 
 def insert_query_with_dict(table_name, param_dict) :
-    mysql = MySQL()
-
-    placeholders = ', '.join(['%s'] * len(param_dict))
-    columns = ', '.join(param_dict.keys())
-
-    qry = "Insert Into {0} ({1}) Values ({2})".format(table_name, columns, placeholders)
-    print('qry : ', qry)
-
-    l = []
-    for item in param_dict.values() :
-        l.append(item)
-
-    mysql.execue_sql(qry, l)
+    insert_query_with_multi_dict(table_name, [param_dict])
 
 def generate_map() :
     json_string_of_bot = "{\"id\" : 18 ,\"bot_name\" : \"joe\" ,\"api_version\" : 1,\"owner\" : \"joe\" ,\"type\" : \"1\", \"race_type\" : \"T\"} "

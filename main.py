@@ -71,7 +71,7 @@ class Board(Resource) :
 
 class Tournament(Resource) :
 
-    def put(self) :
+    def post(self) :
         jsonBody = request.json
         params = jsonBody['games']
 
@@ -106,9 +106,15 @@ class Tournament(Resource) :
     #     return jsonify({'data': rows})
 
 class Bot(Resource) :
-    def put(self, bot_info=None):
+    def post(self):
+        jsonBody = request.json
+        bot_info = jsonBody['bot_info']
 
-        args = parser.parse_args()
+        import time
+        now = time.strftime('%Y-%m-%d %H:%M:%S')
+        bot_info['create_dt'] = now
+        bot_info['update_dt'] = now
+
         mydb.insert_query_with_dict('bot', bot_info);
 
     def get(self, id=None):
