@@ -127,12 +127,14 @@ def getBotIdFromBotName(bot_name) :
 
         sql = 'select bot_name, bot_id from bot where bot_name = %s'
 
-        row = db.execute_select_query(sql, bot_name)[0]
+        rslt = db.execute_select_query(sql, bot_name)
+        
+        if rslt:
+          row = rslt[0]
 
-        print(row)
-
-        botnames[row['bot_name']] = row['bot_id']
-        print(botnames)
+          botnames[row['bot_name']] = row['bot_id']
+        else:
+          return 0
     return botnames[bot_name]
 
 def select_bot_with_yyyymmdd(yyyymmdd) :
