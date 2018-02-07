@@ -61,12 +61,12 @@ class Board(Resource) :
     def get(self):
         return {'hello': 'world'}
 
-    def get(self, yyyymmdd) :
+    def get(self, turn) :
         # run a sql
         print('board get api service')
-        print('yyyymmdd', yyyymmdd)
+        print('turn', turn)
 
-        rows = mydb.select_game_with_yyyymmdd(yyyymmdd);
+        rows = mydb.select_game_with_turn(turn);
         return jsonify({'data': rows})
 
 class Tournament(Resource) :
@@ -102,7 +102,7 @@ class Bot(Resource) :
         return 'hello, bot'
 
 
-api.add_resource(Board, '/board/<int:yyyymmdd>', endpoint='board')
+api.add_resource(Board, '/board/<int:turn>', endpoint='board')
 api.add_resource(Tournament, '/tournament')
 api.add_resource(Bot, '/bot')
 

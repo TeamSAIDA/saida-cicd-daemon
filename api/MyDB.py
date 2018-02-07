@@ -118,10 +118,24 @@ def select_bot_with_yyyymmdd(yyyymmdd) :
     return rows
 
 
-def select_game_with_yyyymmdd(yyyymmdd) :
+def select_game_with_turn(turn) :
     db = MySQL();
-    sql = 'select a.*,  b.*, c.* from game a, bot b, bot c where a.bot_id_1 = b.bot_id and a.bot_id_2 = c.bot_id and date(a.create_dt) = %s';
-    rows = db.execute_select_query(sql, yyyymmdd);  # run a sql
+    sql = """select 
+             a.turn, 
+             b1.bot_name, 
+             b2.bot_name, 
+             (select code_desc from code c where c.code_id = 'race_cd' and b1.race_cd = c.code_val) as race_1, 
+             (select code_desc from code c where c.code_id = 'race_cd' and b2.race_cd = c.code_val) as race_2, 
+             (select code_desc from code c where c.code_id = 'rslt_cd' and a.rslt_cd = c.code_val) as rslt, 
+             (select code_desc from code c where c.code_id = 'map_cd' and a.map_cd = c.code_val) as map_name,
+             a.create_dt
+             from game a
+             left outer join bot b1
+             on     a.bot_id_1 = b1.bot_id
+             left outer join bot b2
+             on     a.bot_id_2 = b2.bot_id
+             where a.turn =%s;"""
+    rows = db.execute_select_query(sql, turn);  # run a sql
     
     return rows
 
