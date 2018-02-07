@@ -67,7 +67,7 @@ class Board(Resource) :
         print('turn', turn)
 
         rows = mydb.select_game_with_turn(turn);
-        return jsonify({'data': rows})
+        return jsonify(rows)
 
 class Tournament(Resource) :
 
