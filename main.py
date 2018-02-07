@@ -71,9 +71,34 @@ class Board(Resource) :
 
 class Tournament(Resource) :
 
-    def put(self) :
+    def post(self) :
         jsonBody = request.json
-        mydb.insert_query_with_dict('game', jsonBody['games']);
+
+        bot_info = jsonBody['bot_info']
+        isOldBot = mydb.getBotIdFromBotName(bot_info['bot_name'])
+
+        if not isOldBot:
+          import time
+          now = time.strftime('%Y-%m-%d %H:%M:%S')
+          bot_info['create_dt'] = now
+          bot_info['update_dt'] = now
+
+          mydb.insert_query_with_dict('bot', bot_info);
+        
+        games = jsonBody['games']
+
+        import time
+        now = time.strftime('%Y-%m-%d %H:%M:%S')
+
+        for row in games:
+            temp = {}
+            temp['bot_id_1'] = mydb.getBotIdFromBotName(row.pop('my_bot_nm'))
+            temp['bot_id_2'] = mydb.getBotIdFromBotName(row.pop('enemy_bot_nm'))
+            temp['create_dt'] = now
+            temp['update_dt'] = now
+            row.update(temp)
+
+        mydb.insert_query_with_multi_dict('game', games);
 
         # if len(data) is 0:
         #     conn.commit()
@@ -93,9 +118,15 @@ class Tournament(Resource) :
     #     return jsonify({'data': rows})
 
 class Bot(Resource) :
-    def put(self, bot_info=None):
+    def post(self):
+        jsonBody = request.json
+        bot_info = jsonBody['bot_info']
 
-        args = parser.parse_args()
+        import time
+        now = time.strftime('%Y-%m-%d %H:%M:%S')
+        bot_info['create_dt'] = now
+        bot_info['update_dt'] = now
+
         mydb.insert_query_with_dict('bot', bot_info);
 
     def get(self, id=None):

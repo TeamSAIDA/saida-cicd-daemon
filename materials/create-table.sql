@@ -32,6 +32,7 @@ CREATE TABLE `game` (
   `race_cd_1` CHAR(2) NOT NULL DEFAULT '04',
   `race_cd_2` CHAR(2) NOT NULL DEFAULT '04',
   `rslt_cd` CHAR(2) NOT NULL,
+  `map_cd` CHAR(2) NOT NULL,
   `create_dt` DATETIME NULL DEFAULT NULL,
   `update_dt` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`turn`, `game_id`)
@@ -59,9 +60,14 @@ CREATE TABLE `bot` (
 -- ---
 -- Foreign Keys
 -- ---
-
 ALTER TABLE `game` ADD FOREIGN KEY (bot_id_1) REFERENCES `bot` (`bot_id`);
 ALTER TABLE `game` ADD FOREIGN KEY (bot_id_2) REFERENCES `bot` (`bot_id`);
+
+
+-- ---
+-- Unique Constraint
+-- ---
+create unique index BOT_NAME_UNIQUE ON BOT (bot_name)
 
 -- ---
 -- Table Properties
