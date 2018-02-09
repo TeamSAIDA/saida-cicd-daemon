@@ -165,6 +165,28 @@ def select_game_with_turn(turn) :
     
     return rows
 
+def select_game_all() :
+    db = MySQL();
+    sql = """select 
+             a.turn as turn, 
+             b1.bot_name as bot_name_1, 
+             b2.bot_name as bot_name_2, 
+             (select code_desc from code c where c.code_id = 'race_cd' and b1.race_cd = c.code_val) as race_1, 
+             (select code_desc from code c where c.code_id = 'race_cd' and b2.race_cd = c.code_val) as race_2, 
+             (select code_desc from code c where c.code_id = 'rslt_cd' and a.rslt_cd = c.code_val) as rslt, 
+             (select code_desc from code c where c.code_id = 'map_cd' and a.map_cd = c.code_val) as map_name,
+             a.create_dt as create_dt
+             from game a
+             left outer join bot b1
+             on     a.bot_id_1 = b1.bot_id
+             left outer join bot b2
+             on     a.bot_id_2 = b2.bot_id
+             order by turn desc, bot_name_1, bot_name_2, race_1, race_2, rslt, map_name;"""
+    rows = db.execute_select_query(sql);  # run a sql
+    
+    return rows
+
+
 if __name__ == '__main__':
     # insert_query_with_sql()
     insert_data()

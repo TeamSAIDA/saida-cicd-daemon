@@ -6,40 +6,12 @@ from flask_restful import reqparse, abort, Resource, Api
 from api.MyDB import MySQL
 import api.MyDB as mydb
 import time
+import calcstat
 
 parser = reqparse.RequestParser()
 app = Flask(__name__)
 api = Api(app)
 # db = MySQL();
-
-garbage = [
-    {
-        'round' : 1,
-        'bot1_name' : 'verystrongjoe',
-        'bot1_racetype' : 'T',
-        'bot1_version' : 1,
-        'bot2_name' : 'veryweakjoe',
-        'bot2_racetype' : 'P',
-        'bot2_version' : 2,
-        'win_count' : 1,
-        'lose_count' : 2,
-        'draw_count' : 2,
-        'game_date' : '20180130000'
-    },
-    {
-        'round': 2,
-        'bot1_name': 'verystrongjoe',
-        'bot1_racetype': 'T',
-        'bot1_version': 1,
-        'bot2_name': 'veryweakjoe',
-        'bot2_racetype': 'P',
-        'bot2_version': 2,
-        'win_count': 2,
-        'lose_count': 1,
-        'draw_count': 1,
-        'game_date': '20180130001'
-    }
-]
 
 @app.route('/')
 def index():
@@ -65,9 +37,14 @@ class Board(Resource) :
         # run a sql
         print('board get api service')
         print('turn', turn)
-
-        rows = mydb.select_game_with_turn(turn);
-        return jsonify(rows)
+        print(turn == 'all')
+        if(turn == 'all'):
+          rows = mydb.select_game_all();
+        else :
+          rows = mydb.select_game_with_turn(turn);
+        return jsonify({'data': rows})
+        
+api.add_resource(Board, '/board/<turn>', endpoint='board')
 
 class Tournament(Resource) :
 
@@ -117,6 +94,8 @@ class Tournament(Resource) :
     #
     #     return jsonify({'data': rows})
 
+api.add_resource(Tournament, '/tournament')
+
 class Bot(Resource) :
     def post(self):
         jsonBody = request.json
@@ -132,11 +111,21 @@ class Bot(Resource) :
     def get(self, id=None):
         return 'hello, bot'
 
-
-api.add_resource(Board, '/board/<int:turn>', endpoint='board')
-api.add_resource(Tournament, '/tournament')
 api.add_resource(Bot, '/bot')
 
+class StatPerRace(Resource) :
+  def get(self):
+    rows = calcstat.get_winningrate_per_race()
+    return jsonify(rows)
+
+api.add_resource(StatPerRace, '/statperrace')
+
+class StatPerTurnPerRace(Resource) :
+  def get(self):
+    rows = calcstat.get_winningrate_per_turn_per_race()
+    return jsonify(rows)
+
+api.add_resource(StatPerTurnPerRace, '/statperturnperrace')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
